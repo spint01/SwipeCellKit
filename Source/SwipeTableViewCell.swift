@@ -18,6 +18,9 @@ open class SwipeTableViewCell: UITableViewCell {
     public weak var delegate: SwipeTableViewCellDelegate?
     
     var animator: SwipeAnimator?
+    // Adds the ability to turn off swiping
+    // TODO: it would be better to allow this on a cell by cell basis
+    open static var isSwipable: Bool = true
 
     var state = SwipeState.center
     var originalCenter: CGFloat = 0
@@ -75,9 +78,11 @@ open class SwipeTableViewCell: UITableViewCell {
     
     func configure() {
         clipsToBounds = false
-        
+
         addGestureRecognizer(tapGestureRecognizer)
-        addGestureRecognizer(panGestureRecognizer)
+        if SwipeTableViewCell.isSwipable {
+            addGestureRecognizer(panGestureRecognizer)
+        }
     }
     
     /// :nodoc:
@@ -99,7 +104,9 @@ open class SwipeTableViewCell: UITableViewCell {
                 self.tableView = tableView
                 
                 tableView.panGestureRecognizer.removeTarget(self, action: nil)
-                tableView.panGestureRecognizer.addTarget(self, action: #selector(handleTablePan(gesture:)))
+                if SwipeTableViewCell.isSwipable {
+                    tableView.panGestureRecognizer.addTarget(self, action: #selector(handleTablePan(gesture:)))
+                }
                 return
             }            
         }
