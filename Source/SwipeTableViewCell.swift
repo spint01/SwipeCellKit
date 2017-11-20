@@ -505,8 +505,11 @@ extension SwipeTableViewCell {
             let view = gestureRecognizer.view,
             let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer
         {
-            let translation = gestureRecognizer.translation(in: view)
-            return abs(translation.y) <= abs(translation.x)
+            // Ensure it's a horizontal drag
+            let velocity = gestureRecognizer.velocity(in: view)
+            if abs(velocity.y) > abs(velocity.x) {
+                return false
+            }
         }
 
         return true
