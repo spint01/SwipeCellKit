@@ -142,6 +142,13 @@ open class SwipeTableViewCell: UITableViewCell {
             guard let actionsView = actionsView else { return }
 
             let translation = gesture.translation(in: target).x
+            // force a swipe of more than 15 pixels
+            if abs(translation) < 15 {
+//                print("translation.x \(translation) velocity.x \(velocity.x)")
+//                print("do not swipe")
+                return
+            }
+//            print("allow swipe")
             scrollRatio = 1.0
             
             // Check if dragging past the center of the opposite direction of action view, if so
@@ -185,6 +192,21 @@ open class SwipeTableViewCell: UITableViewCell {
         case .ended:
             guard let actionsView = actionsView else { return }
 
+            let translation = gesture.translation(in: target).x
+            // cleanup if swipe was less than 15 pixels
+            if abs(translation) < 15 {
+ //                print("actionsView.expanded: \(actionsView.expanded) SWIPE ENDED: \(translation)")
+                if self.state == .center {
+//                    print("SWIPE ENDED: reset")
+                    self.reset()
+                }
+                if !state.isActive {
+//                    print("SWIPE ENDED: notify")
+                    notifyEditingStateChange(active: false)
+                }
+
+                return
+            }
             let velocity = gesture.velocity(in: target)
             state = targetState(forVelocity: velocity)
             
