@@ -329,7 +329,9 @@ class SwipeController: NSObject {
     
     func configure() {
         swipeable?.addGestureRecognizer(tapGestureRecognizer)
-        swipeable?.addGestureRecognizer(panGestureRecognizer)
+        if SwipeTableViewCell.isSwipable {
+            swipeable?.addGestureRecognizer(panGestureRecognizer)
+        }
     }
     
     func reset() {
